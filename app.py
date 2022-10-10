@@ -87,14 +87,9 @@ def ocp(ThreadName, delay, kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
-            if (
-                container.resources
-                
-                and container.resources.requests.memory
-                and (
-                    container.resources.requests.memory
-                    not in validation_resources()["requests"]["memory"]
-                )
+            if container.resources.requests.memory and (
+                container.resources.requests.memory
+                not in validation_resources()["requests"]["memory"]
             ):
                 logger.debug(
                     f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 "
@@ -105,14 +100,9 @@ def ocp(ThreadName, delay, kind):
                     object["object"].metadata.namespace,
                 )
 
-            if (
-                container.resources
-                
-                and container.resources.limits.memory
-                and (
-                    container.resources.limits.memory
-                    not in validation_resources()["limits"]["memory"]
-                )
+            if container.resources.limits.memory and (
+                container.resources.limits.memory
+                not in validation_resources()["limits"]["memory"]
             ):
                 logger.debug(
                     f"{ThreadName} Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 "
