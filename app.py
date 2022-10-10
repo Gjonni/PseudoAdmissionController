@@ -33,6 +33,7 @@ dyn_client = DynamicClient(k8s_client)
 
 
 def validation_resources():
+
     if "REQUEST_MEMORY" not in os.environ :
         logger.debug(f"Failed because REQUEST_MEMORY  is not set.")
         raise EnvironmentError(f"Failed because REQUEST_MEMORY is not set.")
