@@ -87,23 +87,21 @@ def ocp(kind):
         for container in object["object"].spec.template.spec.containers:
             if not container.resources:
                 continue
-            print(container.resources.requests.memory)
-            if  container.resources.requests.memory and (container.resources.requests.memory not in validation_resources()["requests"]["memory"]):
+            if  container.resources.requests and container.resources.requests.memory and (container.resources.requests.memory not in validation_resources()["requests"]["memory"]):
                 logger.debug(f"Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind,object["object"].metadata.name,object["object"].metadata.namespace,)
 
-            if  container.resources.limits.memory and (container.resources.limits.memory not in validation_resources()["limits"]["memory"]):
+            if  container.resources.requests.limits and container.resources.limits.memory and (container.resources.limits.memory not in validation_resources()["limits"]["memory"]):
                 logger.debug(f"Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,
                 )
 
 
 def main():
-    ocp("DeploymentConfig")
-#    with ThreadPoolExecutor(max_workers=2) as e:
-#        e.submit(ocp, "DeploymentConfig")
-#        e.submit(ocp, "Deployment")
-#        e.shutdown(wait=True, cancel_futures=False)
+    with ThreadPoolExecutor(max_workers=2) as e:
+        e.submit(ocp, "DeploymentConfig")
+        e.submit(ocp, "Deployment")
+        e.shutdown(wait=True, cancel_futures=False)
 
 
 if __name__ == "__main__":
