@@ -7,6 +7,7 @@ import time
 import logging
 import sys
 import _thread
+import ThreadPoolExecutor
 
 ##### LOGGING
 logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=os.environ.get("LOGLEVEL", "DEBUG"))
@@ -43,10 +44,9 @@ def validation_namespace():
     return list((os.environ.get("NAMESPACES",'passbolt'),))
 
 def validation_exclude():
-    if "EXCLUDE" in os.environ:
-        return list((os.environ.get("EXCLUDE",'test-d'),))
-    else:
-        return list(('test-d'),)
+    if "EXCLUDE" not in os.environ:
+        raise EnvironmentError("Failed because NAMESPACES is not set.")
+    return list((os.environ.get("EXCLUDE",'test-d'),))
 
 
 def scale_down(kind,name,namespace):
@@ -83,11 +83,15 @@ def ocp(threadName, delay,kind):
 
 
 def main():
-    _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
-    _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) )
-    
-    while 1:
-        pass
+    with ThreadPoolExecutor(max_workers=4) as e:
+        e.submit(ocp,"DeploymentConfig")
+        e.submit(ocp,"Deployment")
+        e.shutdown(wait=True, cancel_futures=False)
+
+ #   _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
+ #   _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) ) 
+  #  while 1:
+  #      pass
 
 
 if __name__ == "__main__":
