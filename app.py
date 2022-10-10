@@ -33,10 +33,11 @@ dyn_client = DynamicClient(k8s_client)
 
 
 def validation_resources():
-    if list("REQUEST_MEMORY","REQUEST_CPU") not in os.environ :
+    
+    if list("REQUEST_MEMORY",) not in os.environ :
         logger.debug(f"Failed because REQUEST_MEMORY  is not set.")
         raise EnvironmentError(f"Failed because REQUEST_MEMORY is not set.")
-    return { 'requests': {'memory': list((os.environ.get("REQUEST_MEMORY"),)),'cpu': list((os.environ.get("REQUEST_CPU"),)) },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
+    return { 'requests': {'memory': list((os.environ.get("REQUEST_MEMORY"),)),'cpu': [] },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
 
 def validation_namespace():
     if "NAMESPACES" not in os.environ:
