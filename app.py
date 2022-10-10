@@ -73,6 +73,9 @@ def scale_down(kind, name, namespace):
     resources.patch(body=body, namespace=namespace)
 
 
+
+
+
 def ocp(ThreadName, delay, kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
 
@@ -88,7 +91,7 @@ def ocp(ThreadName, delay, kind):
 
         for container in object["object"].spec.template.spec.containers:
             if not container.resources.requests:
-                container.resources.append["username"]["memory"]="None"
+                container.append["resources"]["username"]["memory"]="None"
             print(container.resources)
             if container.resources.requests.memory not in validation_resources()["requests"]["memory"]:
                 logger.debug(
