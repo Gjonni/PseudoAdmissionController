@@ -33,10 +33,10 @@ dyn_client = DynamicClient(k8s_client)
 
 
 def validation_resources():
-    if "REQUESTMEMORY" not in os.environ :
-        logger.debug("Failed because REQUESTMEMORY is not set.")
-        raise EnvironmentError(f"Failed because REQUESTMEMORY is not set.")
-    return { 'requests': {'memory': list((os.environ.get("REQUESTMEMORY"),)),'cpu': [] },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
+    if list("REQUEST_MEMORY","REQUEST_CPU") not in os.environ :
+        logger.debug(f"Failed because REQUEST_MEMORY  is not set.")
+        raise EnvironmentError(f"Failed because REQUEST_MEMORY is not set.")
+    return { 'requests': {'memory': list((os.environ.get("REQUEST_MEMORY"),)),'cpu': list((os.environ.get("REQUEST_CPU"),)) },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
 
 def validation_namespace():
     if "NAMESPACES" not in os.environ:
@@ -68,8 +68,6 @@ def ocp(kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     for object in v1_ocp.watch(namespace=namespace):
         logger.debug(validation_resources())
-        logger.debug(validation_namespace())
-        logger.debug(validation_exclude())
 
         if object['object'].metadata.namespace in validation_namespace() and object['object'].metadata.name not in validation_exclude() :
             if object['type'] == "ADDED" or object['type'] == "MODIFIED": 
