@@ -75,7 +75,7 @@ def scale_down(kind, name, namespace):
 
 def ocp(ThreadName, delay, kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
-    
+
     for object in v1_ocp.watch(namespace=namespace):
 
         if not (
@@ -87,25 +87,52 @@ def ocp(ThreadName, delay, kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
-            if  container.resources and container.resources.requests and container.resources.requests.memory and (container.resources.requests.memory not in validation_resources()["requests"]["memory"]):
-                logger.debug(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
-                scale_down(object["object"].kind,object["object"].metadata.name,object["object"].metadata.namespace,)
+            if (
+                container.resources
+                
+                and container.resources.requests.memory
+                and (
+                    container.resources.requests.memory
+                    not in validation_resources()["requests"]["memory"]
+                )
+            ):
+                logger.debug(
+                    f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 "
+                )
+                scale_down(
+                    object["object"].kind,
+                    object["object"].metadata.name,
+                    object["object"].metadata.namespace,
+                )
 
-            if  container.resources and container.resources.requests.limits and container.resources.limits.memory and (container.resources.limits.memory not in validation_resources()["limits"]["memory"]):
-                logger.debug(f"{ThreadName} Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
-                scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,
+            if (
+                container.resources
+                
+                and container.resources.limits.memory
+                and (
+                    container.resources.limits.memory
+                    not in validation_resources()["limits"]["memory"]
+                )
+            ):
+                logger.debug(
+                    f"{ThreadName} Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 "
+                )
+                scale_down(
+                    object["object"].kind,
+                    object["object"].metadata.name,
+                    object["object"].metadata.namespace,
                 )
 
 
 def main():
-#    with ThreadPoolExecutor(max_workers=2) as e:
-#        e.submit(ocp, "DeploymentConfig")
-#        e.submit(ocp, "Deployment")
-#        e.shutdown(wait=True, cancel_futures=False)
+    #    with ThreadPoolExecutor(max_workers=2) as e:
+    #        e.submit(ocp, "DeploymentConfig")
+    #        e.submit(ocp, "Deployment")
+    #        e.shutdown(wait=True, cancel_futures=False)
 
-    _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
-    _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) )
-    
+    _thread.start_new_thread(ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig"))
+    _thread.start_new_thread(ocp, ("Deployment-Thread", 4, "Deployment"))
+
     while 1:
         pass
 
