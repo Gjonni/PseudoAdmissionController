@@ -85,9 +85,9 @@ def ocp(kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
+            print(container.resources.requests.memory)
             if not container.resources:
                 continue
-            print(container.resources.requests.memory)
             if  container.resources.requests and container.resources.requests.memory and (container.resources.requests.memory not in validation_resources()["requests"]["memory"]):
                 logger.debug(f"Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind,object["object"].metadata.name,object["object"].metadata.namespace,)
