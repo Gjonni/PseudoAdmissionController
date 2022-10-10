@@ -65,7 +65,7 @@ def scale_down(kind,name,namespace):
     resources.patch(body=body, namespace=namespace)
 
 
-def ocp(kind):
+def ocp(kind, ThreaName):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     for object in v1_ocp.watch(namespace=namespace):
         if object['object'].metadata.namespace in validation_namespace() and object['object'].metadata.name not in validation_exclude() :
@@ -73,19 +73,21 @@ def ocp(kind):
                 for container in object['object'].spec.template.spec.containers:
                         if container.resources:
                             if container.resources.requests and container.resources.requests.memory and container.resources.requests.memory not in validation_resources()['requests']['memory']:
-                                logger.debug(f"Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                                logger.debug(f"{ThreaName} Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                                 scale_down( object['object'].kind , object['object'].metadata.name, object['object'].metadata.namespace)
                             
                             if container.resources.limits and container.resources.limits.memory and container.resources.limits.memory not in validation_resources()['limits']['memory'] :
-                                logger.debug(f"Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                                logger.debug(f"{ThreaName} Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                                 scale_down( object['object'].kind , object['object'].metadata.name, object['object'].metadata.namespace)
 
 
 
 def main():
-    _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
-    _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) ) 
 
+    with ThreadPoolExecutor(max_workers=4) as e:
+        e.submit(ocp,"DeploymentConfig", "DeploymentConfig-Thread")
+        e.submit(ocp,"Deployment", "Deployment-Thread")
+        e.shutdown(wait=True, cancel_futures=False)
 
  #   _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
  #   _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) ) 
