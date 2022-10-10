@@ -73,7 +73,7 @@ def scale_down(kind, name, namespace):
     resources.patch(body=body, namespace=namespace)
 
 
-def ocp(kind):
+def ocp(ThreadName, delay, kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     
     for object in v1_ocp.watch(namespace=namespace):
@@ -88,11 +88,11 @@ def ocp(kind):
 
         for container in object["object"].spec.template.spec.containers:
             if  container.resources and container.resources.requests and container.resources.requests.memory and (container.resources.requests.memory not in validation_resources()["requests"]["memory"]):
-                logger.debug(f"Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                logger.debug(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind,object["object"].metadata.name,object["object"].metadata.namespace,)
 
             if  container.resources and container.resources.requests.limits and container.resources.limits.memory and (container.resources.limits.memory not in validation_resources()["limits"]["memory"]):
-                logger.debug(f"Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                logger.debug(f"{ThreadName} Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.limits.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,
                 )
 
