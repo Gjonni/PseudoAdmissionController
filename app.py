@@ -87,6 +87,7 @@ def ocp(ThreadName, delay, kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
+            print(container.name)
             if (
                 container.resources.requests.memory
                 and (
