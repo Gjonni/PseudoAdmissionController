@@ -33,7 +33,7 @@ dyn_client = DynamicClient(k8s_client)
 
 def validation_resources():
     if "REQUESTMEMORY" not in os.environ:
-        logging.ebug(f"Proceeding since environment variable REQUESTMEMORY exists ")
+        logging.debug(f"Proceeding since environment variable REQUESTMEMORY exists ")
         raise EnvironmentError("Failed because {} is not set.")
    ## return { 'requests': {'memory': [os.environ.get("MEMORY"]),'cpu': [os.environ.get("CPU")] },'limits': {'memory': [os.environ.get("MEMORY"]),'cpu': [os.environ.get("CPU"]) } }
     else:
