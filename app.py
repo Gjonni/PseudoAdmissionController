@@ -33,7 +33,7 @@ dyn_client = DynamicClient(k8s_client)
 
 def validation_resources():
    ## return { 'requests': {'memory': [os.environ.get("MEMORY"]),'cpu': [os.environ.get("CPU")] },'limits': {'memory': [os.environ.get("MEMORY"]),'cpu': [os.environ.get("CPU"]) } }
-    return { 'requests': {'memory': ['10Mi','20Mi','2Gi'],'cpu': [] },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
+    return { 'requests': {'memory': list((os.environ.get("REQUESTMEMORY"))),'cpu': [] },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
 
 def validation_namespace():
     if "NAMESPACES" in os.environ:
