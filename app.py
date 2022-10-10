@@ -36,7 +36,7 @@ def validation_resources():
     if "REQUESTMEMORY" not in os.environ:
         logger.debug("Failed because REQUESTMEMORY is not set.")
         raise EnvironmentError(f"Failed because REQUESTMEMORY is not set.")
-    return { 'requests': {'memory': list((os.environ.get("REQUESTMEMORY"))),'cpu': list((os.environ.get("REQUESTCPU"))) },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
+    return { 'requests': {'memory': list((os.environ.get("REQUESTMEMORY")), ),'cpu': list((os.environ.get("REQUESTCPU"))) },'limits': {'memory': ['512Mi','2Gi'],'cpu': [] } }
 
 def validation_namespace():
     if "NAMESPACES" not in os.environ:
