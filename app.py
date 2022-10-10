@@ -76,6 +76,7 @@ def scale_down(kind, name, namespace):
 def ocp(kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     for object in v1_ocp.watch(namespace=namespace):
+        print(object["object"])
         if not (
             object["object"].metadata.namespace in validation_namespace()
             and object["object"].metadata.name not in validation_exclude()
@@ -85,7 +86,6 @@ def ocp(kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
-            print(container.resources.requests.memory)
             if not container.resources:
                 continue
             if  container.resources.requests and container.resources.requests.memory and (container.resources.requests.memory not in validation_resources()["requests"]["memory"]):
