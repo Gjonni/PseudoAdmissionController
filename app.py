@@ -37,15 +37,15 @@ def validation_resources():
 
 def validation_namespace():
     if "NAMESPACES" in os.environ:
-        return list((os.environ.get("NAMESPACES",'passbolt')))
+        return list((os.environ.get("NAMESPACES",'passbolt'),))
     else:
-        return list(('passbolt'))
+        return list(('passbolt',))
 
 def validation_exclude():
     if "EXCLUDE" in os.environ:
-        return [os.environ.get("EXCLUDE",'test-d')]
+        return list((os.environ.get("EXCLUDE",'test-d')))
     else:
-        return ['test-d']
+        return list(('test-d'))
 
 
 def scale_down(kind,name,namespace):
