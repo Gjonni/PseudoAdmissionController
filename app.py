@@ -87,10 +87,10 @@ def ocp(kind):
         for container in object["object"].spec.template.spec.containers:
             if not container.resources:
                 continue
-            if not container.resources.requests:
+            if not container.resources.requests.memory:
                 continue
 
-            if container.resources.requests.memory and (
+            if  (
                 container.resources.requests.memory
                 not in validation_resources()["requests"]["memory"]
             ):
