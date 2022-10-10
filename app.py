@@ -43,9 +43,9 @@ def validation_namespace():
 
 def validation_exclude():
     if "EXCLUDE" in os.environ:
-        return list((os.environ.get("EXCLUDE",'test-d')))
+        return list((os.environ.get("EXCLUDE",'test-d'),))
     else:
-        return list(('test-d'))
+        return list(('test-d'),)
 
 
 def scale_down(kind,name,namespace):
