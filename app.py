@@ -40,11 +40,13 @@ def validation_resources():
 
 def validation_namespace():
     if "NAMESPACES" not in os.environ:
+        logger.debug("Failed because NAMESPACES is not set.")
         raise EnvironmentError("Failed because NAMESPACES is not set.")
     return list((os.environ.get("NAMESPACES",'passbolt'),))
 
 def validation_exclude():
     if "EXCLUDE" not in os.environ:
+        logger.debug("Failed because EXCLUDE is not set.")
         raise EnvironmentError("Failed because NAMESPACES is not set.")
     return list((os.environ.get("EXCLUDE",'test-d'),))
 
@@ -65,6 +67,9 @@ def scale_down(kind,name,namespace):
 def ocp(kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     for object in v1_ocp.watch(namespace=namespace):
+        logger.debug(validation_resources())
+        logger.debug(validation_namespace())
+        logger.debug(validation_exclude())
 
         if object['object'].metadata.namespace in validation_namespace() and object['object'].metadata.name not in validation_exclude() :
             if object['type'] == "ADDED" or object['type'] == "MODIFIED": 
