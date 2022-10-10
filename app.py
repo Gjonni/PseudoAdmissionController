@@ -33,7 +33,6 @@ dyn_client = DynamicClient(k8s_client)
 
 
 def validation_resources():
-
     if "REQUEST_MEMORY" not in os.environ :
         logger.debug(f"Failed because REQUEST_MEMORY  is not set.")
         raise EnvironmentError(f"Failed because REQUEST_MEMORY is not set.")
@@ -83,16 +82,10 @@ def ocp(kind):
 
 
 def main():
-    with ThreadPoolExecutor(max_workers=4) as e:
+    with ThreadPoolExecutor(max_workers=2) as e:
         e.submit(ocp,"DeploymentConfig")
         e.submit(ocp,"Deployment")
         e.shutdown(wait=True, cancel_futures=False)
-
- #   _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
- #   _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) ) 
-  #  while 1:
-  #      pass
-
 
 if __name__ == "__main__":
     main()
