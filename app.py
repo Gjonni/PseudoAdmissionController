@@ -87,7 +87,7 @@ def ocp(ThreadName, delay, kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
-            if container.resources.requests.memory and (
+            if container.resources and (
                 container.resources.requests.memory
                 not in validation_resources()["requests"]["memory"]
             ):
@@ -100,7 +100,7 @@ def ocp(ThreadName, delay, kind):
                     object["object"].metadata.namespace,
                 )
 
-            if container.resources.limits.memory and (
+            if container.resources and (
                 container.resources.limits.memory
                 not in validation_resources()["limits"]["memory"]
             ):
