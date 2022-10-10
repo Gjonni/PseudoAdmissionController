@@ -90,6 +90,7 @@ def ocp(kind):
             
             if (
                 container.resources.requests
+                and container.resources.requests.memory
                 and (
                     container.resources.requests.memory
                     not in validation_resources()["requests"]["memory"]
