@@ -87,7 +87,8 @@ def ocp(ThreadName, delay, kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
-
+            if not container.resources.requests.memory:
+                continue
             if container.resources.requests.memory not in validation_resources()["requests"]["memory"]:
                 logger.debug(
                     f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 "
