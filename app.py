@@ -98,10 +98,11 @@ def ocp(kind):
 
 
 def main():
-    with ThreadPoolExecutor(max_workers=2) as e:
-        e.submit(ocp, "DeploymentConfig")
-        e.submit(ocp, "Deployment")
-        e.shutdown(wait=True, cancel_futures=False)
+    ocp("DeploymentConfig")
+#    with ThreadPoolExecutor(max_workers=2) as e:
+#        e.submit(ocp, "DeploymentConfig")
+#        e.submit(ocp, "Deployment")
+#        e.shutdown(wait=True, cancel_futures=False)
 
 
 if __name__ == "__main__":
