@@ -37,9 +37,9 @@ def validation_resources():
 
 def validation_namespace():
     if "NAMESPACES" in os.environ:
-        return list(os.environ.get("NAMESPACES",'passbolt'))
+        return [os.environ.get("NAMESPACES",'passbolt')]
     else:
-        return list('passbolt','test')
+        return ['passbolt']
 
 def validation_exclude():
     if "EXCLUDE" in os.environ:
@@ -64,6 +64,7 @@ def scale_down(kind,name,namespace):
 def ocp(threadName, delay,kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     for object in v1_ocp.watch(namespace=namespace):
+        print(validation_namespace())
         if object['object'].metadata.namespace in validation_namespace() and object['object'].metadata.name not in validation_exclude() :
             if object['type'] == "ADDED" or object['type'] == "MODIFIED": 
                 for container in object['object'].spec.template.spec.containers:
