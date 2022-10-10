@@ -84,10 +84,10 @@ def ocp(kind, ThreaName):
 
 def main():
 
-    with ThreadPoolExecutor(max_workers=4) as e:
+    with ThreadPoolExecutor(max_workers=2) as e:
         e.submit(ocp,"DeploymentConfig", "DeploymentConfig-Thread")
         e.submit(ocp,"Deployment", "Deployment-Thread")
-        e.shutdown(wait=True, cancel_futures=False)
+     #   e.shutdown(wait=True, cancel_futures=False)
 
  #   _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
  #   _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) ) 
