@@ -65,7 +65,7 @@ def scale_down(kind,name,namespace):
     resources.patch(body=body, namespace=namespace)
 
 
-def ocp(kind, ThreaName):
+def ocp(ThreaName, delay, kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     for object in v1_ocp.watch(namespace=namespace):
         if object['object'].metadata.namespace in validation_namespace() and object['object'].metadata.name not in validation_exclude() :
@@ -83,11 +83,9 @@ def ocp(kind, ThreaName):
 
 
 def main():
+    _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
+    _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) ) 
 
-    with ThreadPoolExecutor(max_workers=2) as e:
-        e.submit(ocp,"DeploymentConfig", "DeploymentConfig-Thread")
-        e.submit(ocp,"Deployment", "Deployment-Thread")
-     #   e.shutdown(wait=True, cancel_futures=False)
 
  #   _thread.start_new_thread( ocp, ("DeploymentConfig-Thread", 2, "DeploymentConfig" ) )
  #   _thread.start_new_thread( ocp, ("Deployment-Thread", 4, "Deployment" ) ) 
