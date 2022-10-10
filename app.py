@@ -64,6 +64,8 @@ def scale_down(kind,name,namespace):
 def ocp(threadName, delay,kind):
     v1_ocp = dyn_client.resources.get(api_version="v1", kind=kind)
     for object in v1_ocp.watch(namespace=namespace):
+        logger.debug(f" Namespaces Validation: {validation_namespace()}")
+        logger.debug(f" Object Validation: {validation_exclude()}")
         print(validation_exclude())
         if object['object'].metadata.namespace in validation_namespace() and object['object'].metadata.name not in validation_exclude() :
             if object['type'] == "ADDED" or object['type'] == "MODIFIED": 
