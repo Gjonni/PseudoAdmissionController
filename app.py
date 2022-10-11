@@ -130,13 +130,13 @@ def ocp(ThreadName, delay, kind):
 
             if  not container.resources.requests:
                 container.resources = Resources({"requests":{"memory": "0","cpu": "0"}})
-                logger.debug(f"{ container.resources}")
+                logger.debug(f"requests: { container.resources}")
             if  not container.resources.requests.memory:
                 container.resources.requests.memory = '0'
-                logger.debug(f"{ container.resources.requests}")
+                logger.debug(f"requests: { container.resources.requests}")
             if  not container.resources.requests.cpu :
                 container.resources.requests.cpu = '0'
-                logger.debug(f"{ container.resources.requests}")
+                logger.debug(f"requests: { container.resources.requests}")
 
         
             
@@ -146,13 +146,13 @@ def ocp(ThreadName, delay, kind):
 
             if  not container.resources.limits:
                 container.resources = Resources({"limits":{"memory": "0","cpu": "0"}})
-                logger.debug(f"{ container.resources}")
+                logger.debug(f"limits: { container.resources}")
             if  not container.resources.limits:
                 container.resources.limits.memory = '0'
-                logger.debug(f"{ container.resources.limits}")
+                logger.debug(f"limits: { container.resources.limits}")
             if  not container.resources.limits.cpu :
                 container.resources.limits.cpu = '0'
-                logger.debug(f"{ container.resources.limits}")
+                logger.debug(f"limits: { container.resources.limits}")
         
             
             if (container.resources.limits.memory not in ValidationResources().requestMemory):
