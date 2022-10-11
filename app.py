@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 logging.basicConfig(
     format="%(asctime)s %(message)s",
     datefmt="%m/%d/%Y %I:%M:%S %p",
-    level=os.environ.get("LOGLEVEL", "DEBUG"),
+    level=os.environ.get("LOGLEVEL", "INFO"),
 )
 logger = logging.getLogger("route.response.time")
 
@@ -45,7 +45,7 @@ class Resources(dict):
             )
 
 
-class ValidationResources:
+class ValidationEnviroment:
     def __init__(self):
         self.namespaces = os.environ.get("NAMESPACES")
         self.excludeObject = os.environ.get("EXCLUDE")
@@ -119,8 +119,8 @@ def ocp(ThreadName, delay, kind):
     for object in v1_ocp.watch(namespace=namespace):
 
         if not (
-            object["object"].metadata.namespace in ValidationResources().namespaces
-            and object["object"].metadata.name not in ValidationResources().excludeObject
+            object["object"].metadata.namespace in ValidationEnviroment().namespaces
+            and object["object"].metadata.name not in ValidationEnviroment().excludeObject
         ):
             continue
         if object["type"] not in ["ADDED", "MODIFIED"]:
@@ -129,37 +129,29 @@ def ocp(ThreadName, delay, kind):
         for container in object["object"].spec.template.spec.containers:
 
             if  not container.resources.requests:
-                container.resources = Resources({"requests":{"memory": "0","cpu": "0"}})
-                logger.debug(f"requests: { container.resources}")
+                container.resources.requests = Resources({"memory": "0","cpu": "0"})
             if  not container.resources.requests.memory:
                 container.resources.requests.memory = '0'
-                logger.debug(f"requests: { container.resources.requests}")
             if  not container.resources.requests.cpu :
                 container.resources.requests.cpu = '0'
-                logger.debug(f"requests: { container.resources.requests}")
 
-        
             
-            if (container.resources.requests.memory not in ValidationResources().requestMemory):
+            if (container.resources.requests.memory not in ValidationEnviroment().requestMemory):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
+
             if  not container.resources.limits:
-                container.resources = Resources({"limits":{"memory": "0","cpu": "0"}})
-                logger.debug(f"limits: { container.resources}")
-            if  not container.resources.limits:
+                container.resources.limits = Resources({"memory": "0","cpu": "0"})
+            if  not container.resources.limits.memory:
                 container.resources.limits.memory = '0'
-                logger.debug(f"limits: { container.resources.limits}")
             if  not container.resources.limits.cpu :
                 container.resources.limits.cpu = '0'
-                logger.debug(f"limits: { container.resources.limits}")
-        
+
             
-            if (container.resources.limits.memory not in ValidationResources().requestMemory):
+            if (container.resources.limits.memory not in ValidationEnviroment().limitsMemory):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
-
-
 
 
 
