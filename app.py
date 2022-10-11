@@ -50,7 +50,9 @@ class ValidationEnviroment:
         self.namespaces = os.environ.get("NAMESPACES")
         self.excludeObject = os.environ.get("EXCLUDE")
         self.requestMemory = os.environ.get("REQUEST_MEMORY")
+        self.requestCpu = os.environ.get("REQUEST_CPU")
         self.limitsMemory = os.environ.get("LIMITS_MEMORY")
+        self.limitsCpu = os.environ.get("LIMITS_CPU")
 
     @property
     def namespaces(self):
@@ -85,17 +87,40 @@ class ValidationEnviroment:
             raise ValueError("Limits Memory  is not set.")
         self._requestMemory = value.split(',')
 
+
+    @property
+    def requestCpu(self):
+        return self._requestCpu
+
+    @requestCpu.setter
+    def requestCpu(self, value):
+        logger.debug(f"La whitelist della Request CPU {value}")
+        if not value:
+            raise ValueError("Request Cpu  is not set.")
+        self._requestCpu = value.split(',')
+
+
     @property
     def limitsMemory(self):
         return self._limitsMemory
 
     @limitsMemory.setter
     def limitsMemory(self, value):
-        logger.debug(f"La whitelist della Request Memory {value}")
+        logger.debug(f"La whitelist della Limits Memory {value}")
         if not value:
-            raise ValueError("Request Memory  is not set.")
+            raise ValueError("Limits Memory  is not set.")
         self._limitsMemory = value.split(',')
 
+    @property
+    def limitsCpu(self):
+        return self._limitsCpu
+
+    @limitsCpu.setter
+    def limitsCpu(self, value):
+        logger.debug(f"La whitelist della Limits CPU {value}")
+        if not value:
+            raise ValueError("Limits Cpu  is not set.")
+        self._limitsCpu = value.split(',')
 
 
 
@@ -140,6 +165,10 @@ def ocp(ThreadName, delay, kind):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
+            if (container.resources.requests.cpu not in ValidationEnviroment().requestCpu):
+                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests cpu: { container.resources.requests.cpu} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
+
 
             if  not container.resources.limits:
                 container.resources.limits = Resources({"memory": "0","cpu": "0"})
@@ -153,6 +182,9 @@ def ocp(ThreadName, delay, kind):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
+            if (container.resources.limits.cpu not in ValidationEnviroment().limitsCpu):
+                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits cpu: { container.resources.limits.cpu} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
 
