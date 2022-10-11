@@ -48,7 +48,7 @@ class ValidationResources:
     def __init__(self):
         self.namespaces = os.environ.get("NAMESPACES")
         self.excludeObject = os.environ.get("EXCLUDE")
-        self.requestMemory = list((os.environ.get("REQUEST_MEMORY"),))
+        self.requestMemory = os.environ.get("REQUEST_MEMORY")
 
     @property
     def namespaces(self):
@@ -78,9 +78,7 @@ class ValidationResources:
     def requestMemory(self, value):
         if not value:
             raise ValueError("Request Memory  is not set.")
-        self._requestMemory = value
-
-
+        self._requestMemory = value.split(',')
 
 
 
