@@ -46,8 +46,8 @@ class Resources(dict):
 
 class ValidationResources:
     def __init__(self):
-        self.namespaces = list((os.environ.get("NAMESPACES"),))
-        self.excludeObject = list((os.environ.get("EXCLUDE"),))
+        self.namespaces = os.environ.get("NAMESPACES")
+        self.excludeObject = os.environ.get("EXCLUDE")
         self.requestMemory = list((os.environ.get("REQUEST_MEMORY"),))
 
     @property
@@ -58,7 +58,7 @@ class ValidationResources:
     def namespaces(self, value):
         if not value:
             raise ValueError("NAMESPACES is not set.")
-        self._namespaces = value
+        self._namespaces = value.split(',')
 
     @property
     def excludeObject(self):
@@ -68,7 +68,7 @@ class ValidationResources:
     def excludeObject(self, value):
         if not value:
             raise ValueError("List Object BlackList is not set.")
-        self._excludeObject = value
+        self._excludeObject = value.split(',')
 
     @property
     def requestMemory(self):
@@ -82,28 +82,6 @@ class ValidationResources:
 
 
 
-def validation_resources():
-    if "REQUEST_MEMORY" not in os.environ:
-        logger.debug(f"Failed because REQUEST_MEMORY  is not set.")
-        raise EnvironmentError(f"Failed because REQUEST_MEMORY is not set.")
-    return {
-        "requests": {"memory": list((os.environ.get("REQUEST_MEMORY"),)), "cpu": []},
-        "limits": {"memory": ["512Mi", "2Gi"], "cpu": []},
-    }
-
-
-def validation_namespace():
-    if "NAMESPACES" not in os.environ:
-        logger.debug("Failed because NAMESPACES is not set.")
-        raise EnvironmentError("Failed because NAMESPACES is not set.")
-    return list((os.environ.get("NAMESPACES", "passbolt"),))
-
-
-def validation_exclude():
-    if "EXCLUDE" not in os.environ:
-        logger.debug("Failed because EXCLUDE is not set.")
-        raise EnvironmentError("Failed because EXCLUDE is not set.")
-    return list((os.environ.get("EXCLUDE", "test-d"),))
 
 
 def scale_down(kind, name, namespace):
