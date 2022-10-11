@@ -13,13 +13,14 @@ from concurrent.futures import ThreadPoolExecutor
 logging.basicConfig(
     format="%(asctime)s %(message)s",
     datefmt="%m/%d/%Y %I:%M:%S %p",
-    level=os.environ.get("LOGLEVEL", "DEBUG"),
+    level=os.environ.get("LOGLEVEL", "INFO"),
 )
 logger = logging.getLogger("route.response.time")
 
 ### Openshift or Kubernetes
 
 urllib3.disable_warnings()
+
 
 if "OPENSHIFT_BUILD_NAME" in os.environ:
     kubernetes.config.load_incluster_config()
@@ -34,6 +35,29 @@ else:
 
 k8s_client = kubernetes.client.ApiClient()
 dyn_client = DynamicClient(k8s_client)
+
+
+class Resources(dict):
+    def __init__(self, dic):
+        for key, val in dic.items():
+            self.__dict__[key] = self[key] = (
+                Resources(val) if isinstance(val, dict) else val
+            )
+
+class ValidationResources:
+    def __init__(self):
+        self.requestMemory = list((os.environ.get("REQUEST_MEMORY"),))
+        
+    @property
+    def requestMemory(self):
+        return self._requestMemory
+
+    @requestMemory.setter
+    def requestMemory(self, value):
+        if not value:
+            raise ValueError("Request Memory  is not set.")
+        self._requestMemory = value
+
 
 
 def validation_resources():
@@ -56,7 +80,7 @@ def validation_namespace():
 def validation_exclude():
     if "EXCLUDE" not in os.environ:
         logger.debug("Failed because EXCLUDE is not set.")
-        raise EnvironmentError("Failed because NAMESPACES is not set.")
+        raise EnvironmentError("Failed because EXCLUDE is not set.")
     return list((os.environ.get("EXCLUDE", "test-d"),))
 
 
@@ -71,9 +95,6 @@ def scale_down(kind, name, namespace):
         },
     }
     resources.patch(body=body, namespace=namespace)
-
-
-
 
 
 def ocp(ThreadName, delay, kind):
@@ -91,19 +112,19 @@ def ocp(ThreadName, delay, kind):
 
         for container in object["object"].spec.template.spec.containers:
             if not container.resources.requests:
-                container.append["resources"]="None"
-                
-            print(container.resources)
-            if container.resources.requests.memory not in validation_resources()["requests"]["memory"]:
-                logger.debug(
-                    f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - { container.resources.requests.memory } in namespace { object['object'].metadata.namespace } - Scale to 0 "
-                )
-                scale_down(
-                    object["object"].kind,
-                    object["object"].metadata.name,
-                    object["object"].metadata.namespace,
-                )
+                container.resources.requests = Resources({"memory": "0"})
 
+            
+            logger.debug(f"{container.resources}")
+            if (container.resources.requests.memory not in ValidationResources().requestMemory):
+                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
+
+            if not container.resources.limits:
+                container.resources.limits = Resources({"memory": "0"})
+            if (container.resources.limits.memory not in validation_resources()["limits"]["memory"]):
+                logger.info( f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
 def main():
