@@ -130,12 +130,15 @@ def ocp(ThreadName, delay, kind):
 
             if  not container.resources.requests:
                 container.resources = Resources({"requests":{"memory": "0","cpu": "0"}})
+                logger.debug(f"{ container.resources}")
             if  not container.resources.requests.memory:
                 container.resources.requests.memory = '0'
+                logger.debug(f"{ container.resources.requests.memory}")
             if  not container.resources.requests.cpu :
                 container.resources.requests.cpu = '0'
+                logger.debug(f"{ container.resources.requests.cpu}")
+
         
-            logger.info(f"{ container.resources}")
             
             if (container.resources.requests.memory not in ValidationResources().requestMemory):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
@@ -143,15 +146,14 @@ def ocp(ThreadName, delay, kind):
 
             if  not container.resources.limits:
                 container.resources = Resources({"limits":{"memory": "0","cpu": "0"}})
-                logger.info(f"{ container.resources}")
+                logger.debug(f"{ container.resources}")
             if  not container.resources.limits.memory:
                 container.resources.limits.memory = '0'
-                logger.info(f"{ container.resources}")
+                logger.debug(f"{ container.resources.limits.memory}")
             if  not container.resources.limits.cpu :
                 container.resources.limits.cpu = '0'
-                logger.info(f"{ container.resources}")
+                logger.debug(f"{ container.resources.limits.cpu}")
         
-            logger.info(f"{ container.resources}")
             
             if (container.resources.limits.memory not in ValidationResources().requestMemory):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.limits.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
