@@ -1,14 +1,5 @@
 import os
-import logging
-
-# LOGGING
-logging.basicConfig(
-    format="%(asctime)s %(message)s",
-    datefmt="%m/%d/%Y %I:%M:%S %p",
-    level=os.environ.get("LOGLEVEL", "INFO"),
-)
-logger = logging.getLogger("route.response.time")
-
+from library.Logging import Logging
 
 
 class ValidationEnviroment:
@@ -26,7 +17,7 @@ class ValidationEnviroment:
 
     @namespaces.setter
     def namespaces(self, value):
-        logger.debug(f"I Namespaces verificati sono {value}")
+        Logging.logger.debug(f"I Namespaces verificati sono {value}")
         if not value:
             raise ValueError("NAMESPACES is not set.")
         self._namespaces = value.split(',')
@@ -37,7 +28,7 @@ class ValidationEnviroment:
 
     @excludeObject.setter
     def excludeObject(self, value):
-        logger.debug(f"Gli oggetti esclusi dalla verifica sono {value}")
+        Logging.logger.debug(f"Gli oggetti esclusi dalla verifica sono {value}")
         if not value:
             raise ValueError("List Object BlackList is not set.")
         self._excludeObject = value.split(',')
@@ -48,7 +39,7 @@ class ValidationEnviroment:
 
     @requestMemory.setter
     def requestMemory(self, value):
-        logger.debug(f"La whitelist della Request Memory {value}")
+        Logging.logger.debug(f"La whitelist della Request Memory {value}")
         if not value:
             raise ValueError("Limits Memory  is not set.")
         self._requestMemory = value.split(',')
@@ -60,7 +51,7 @@ class ValidationEnviroment:
 
     @requestCpu.setter
     def requestCpu(self, value):
-        logger.debug(f"La whitelist della Request CPU {value}")
+        Logging.logger.debug(f"La whitelist della Request CPU {value}")
         if not value:
             raise ValueError("Request Cpu  is not set.")
         self._requestCpu = value.split(',')
@@ -72,7 +63,7 @@ class ValidationEnviroment:
 
     @limitsMemory.setter
     def limitsMemory(self, value):
-        logger.debug(f"La whitelist della Limits Memory {value}")
+        Logging.logger.debug(f"La whitelist della Limits Memory {value}")
         if not value:
             raise ValueError("Limits Memory  is not set.")
         self._limitsMemory = value.split(',')
@@ -83,7 +74,7 @@ class ValidationEnviroment:
 
     @limitsCpu.setter
     def limitsCpu(self, value):
-        logger.debug(f"La whitelist della Limits CPU {value}")
+        Logging.logger.debug(f"La whitelist della Limits CPU {value}")
         if not value:
             raise ValueError("Limits Cpu  is not set.")
         self._limitsCpu = value.split(',')

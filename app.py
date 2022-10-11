@@ -6,16 +6,9 @@ import logging
 import _thread
 from library.ValidationEnviroment import ValidationEnviroment
 from library.Resources import Resources
+from library.Logging import Logging
 
 
-
-# LOGGING
-logging.basicConfig(
-    format="%(asctime)s %(message)s",
-    datefmt="%m/%d/%Y %I:%M:%S %p",
-    level=os.environ.get("LOGLEVEL", "INFO"),
-)
-logger = logging.getLogger("route.response.time")
 
 ### Openshift or Kubernetes
 
@@ -75,11 +68,11 @@ def ocp(ThreadName, delay, kind):
 
             
             if (container.resources.requests.memory not in ValidationEnviroment().requestMemory):
-                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                Logging.logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
             if (container.resources.requests.cpu not in ValidationEnviroment().requestCpu):
-                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests cpu: { container.resources.requests.cpu} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                Logging.logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests cpu: { container.resources.requests.cpu} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
@@ -92,11 +85,11 @@ def ocp(ThreadName, delay, kind):
 
             
             if (container.resources.limits.memory not in ValidationEnviroment().limitsMemory):
-                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                Logging.logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
             if (container.resources.limits.cpu not in ValidationEnviroment().limitsCpu):
-                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits cpu: { container.resources.limits.cpu} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                Logging.logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits cpu: { container.resources.limits.cpu} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
