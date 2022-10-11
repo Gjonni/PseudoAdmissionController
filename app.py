@@ -44,6 +44,7 @@ class Resources(dict):
                 Resources(val) if isinstance(val, dict) else val
             )
 
+
 class ValidationResources:
     def __init__(self):
         self.namespaces = os.environ.get("NAMESPACES")
@@ -126,20 +127,22 @@ def ocp(ThreadName, delay, kind):
             continue
 
         for container in object["object"].spec.template.spec.containers:
-            if not container.resources.requests:
-                container.resources.requests = Resources({"memory": "0"})
-                logger.debug(f"{container.resources}")
+
+            if  not container.resources.requests:
+                container.resources = Resources({"requests":{"memory": "0","cpu": "0"}})
+            if  not container.resources.requests.memory:
+                container.resources.requests.memory = '0'
+            if  not container.resources.requests.cpu :
+                container.resources.requests.cpu = '0'
+        
+            logger.info(f"{ container.resources}")
             
             if (container.resources.requests.memory not in ValidationResources().requestMemory):
-                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
+   
 
-            if not container.resources.requests.limits:
-                container.resources.requests.limits = Resources({"memory": "0"})
 
-            if (container.resources.limits.memory not in ValidationResources().limitsMemory):
-                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
-                scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
 
