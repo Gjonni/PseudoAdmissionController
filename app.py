@@ -49,6 +49,7 @@ class ValidationResources:
         self.namespaces = os.environ.get("NAMESPACES")
         self.excludeObject = os.environ.get("EXCLUDE")
         self.requestMemory = os.environ.get("REQUEST_MEMORY")
+        self.limitsMemory = os.environ.get("LIMITS_MEMORY")
 
     @property
     def namespaces(self):
@@ -82,6 +83,19 @@ class ValidationResources:
         if not value:
             raise ValueError("Request Memory  is not set.")
         self._requestMemory = value.split(',')
+
+    @property
+    def limitsMemory(self):
+        return self._limitsMemory
+
+    @limitsMemory.setter
+    def limitsMemory(self, value):
+        logger.debug(f"La whitelist della Request Memory {value}")
+        if not value:
+            raise ValueError("Request Memory  is not set.")
+        self._limitsMemory = value.split(',')
+
+
 
 
 
@@ -119,6 +133,10 @@ def ocp(ThreadName, delay, kind):
             logger.debug(f"{container.resources}")
             if (container.resources.requests.memory not in ValidationResources().requestMemory):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
+
+            if (container.resources.limits.memory not in ValidationResources().limitsMemory):
+                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.limits} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
