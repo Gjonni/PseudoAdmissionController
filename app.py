@@ -46,8 +46,20 @@ class Resources(dict):
 
 class ValidationResources:
     def __init__(self):
+        self.namespaces = list((os.environ.get("NAMESPACES"),))
         self.requestMemory = list((os.environ.get("REQUEST_MEMORY"),))
-        
+  
+    @property
+    def namespaces(self):
+        return self._namespaces
+
+    @namespaces.setter
+    def namespaces(self, value):
+        if not value:
+            raise ValueError("NAMESPACES is not set.")
+        self._namespaces = value
+
+
     @property
     def requestMemory(self):
         return self._requestMemory
@@ -103,7 +115,7 @@ def ocp(ThreadName, delay, kind):
     for object in v1_ocp.watch(namespace=namespace):
 
         if not (
-            object["object"].metadata.namespace in validation_namespace()
+            object["object"].metadata.namespace in ValidationResources().namespaces
             and object["object"].metadata.name not in validation_exclude()
         ):
             continue
