@@ -56,6 +56,7 @@ class ValidationResources:
 
     @namespaces.setter
     def namespaces(self, value):
+        logger.debug(f"{value}")
         if not value:
             raise ValueError("NAMESPACES is not set.")
         self._namespaces = value.split(',')
@@ -66,6 +67,7 @@ class ValidationResources:
 
     @excludeObject.setter
     def excludeObject(self, value):
+        logger.debug(f"{value}")
         if not value:
             raise ValueError("List Object BlackList is not set.")
         self._excludeObject = value.split(',')
@@ -76,6 +78,7 @@ class ValidationResources:
 
     @requestMemory.setter
     def requestMemory(self, value):
+        logger.debug(f"{value}")
         if not value:
             raise ValueError("Request Memory  is not set.")
         self._requestMemory = value.split(',')
