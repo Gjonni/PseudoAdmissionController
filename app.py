@@ -120,11 +120,6 @@ def ocp(ThreadName, delay, kind):
                 logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.requests} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
-            if not container.resources.limits:
-                container.resources.limits = Resources({"memory": "0"})
-            if (container.resources.limits.memory not in validation_resources()["limits"]["memory"]):
-                logger.info( f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
-                scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
 def main():
