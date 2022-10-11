@@ -47,8 +47,9 @@ class Resources(dict):
 class ValidationResources:
     def __init__(self):
         self.namespaces = list((os.environ.get("NAMESPACES"),))
+        self.excludeObject = list((os.environ.get("EXCLUDE"),))
         self.requestMemory = list((os.environ.get("REQUEST_MEMORY"),))
-  
+
     @property
     def namespaces(self):
         return self._namespaces
@@ -59,6 +60,15 @@ class ValidationResources:
             raise ValueError("NAMESPACES is not set.")
         self._namespaces = value
 
+    @property
+    def excludeObject(self):
+        return self._excludeObject
+
+    @excludeObject.setter
+    def excludeObject(self, value):
+        if not value:
+            raise ValueError("List Object BlackList is not set.")
+        self._excludeObject = value
 
     @property
     def requestMemory(self):
@@ -116,7 +126,7 @@ def ocp(ThreadName, delay, kind):
 
         if not (
             object["object"].metadata.namespace in ValidationResources().namespaces
-            and object["object"].metadata.name not in validation_exclude()
+            and object["object"].metadata.name not in ValidationResources().excludeObject
         ):
             continue
         if object["type"] not in ["ADDED", "MODIFIED"]:
