@@ -156,7 +156,7 @@ def ocp(ThreadName, delay, kind):
         
             
             if (container.resources.limits.memory not in ValidationResources().requestMemory):
-                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - requests ram: { container.resources.limits.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
+                logger.info(f"{ThreadName } - Policy Violation from Container { container.name } - nella { kind } { object['object'].metadata.name } - limits ram: { container.resources.limits.memory} in namespace { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down( object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
