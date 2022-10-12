@@ -1,5 +1,3 @@
-# PseudoAdmissionController
-
 
 
 
@@ -20,4 +18,34 @@ make install
 
 
 Configurazione
+	Variabili d'ambiente
+Variabile
+Esempio
+Descrizione
+TZ
+Europe/Rome
+
+NAMESPACES
+test-namespace
+
+EXCLUDE
+PseudoAdmissionController
+
+LOGLEVEL
+INFO
+
+REQUEST_MEMORY
+10Mi,20Mi
+
+LIMITS_MEMORY
+2Gi,4Gi
+
+REQUEST_CPU
+100m,200m
+
+LIMITS_CPU
+2,4
+
+	
+
 
