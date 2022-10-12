@@ -1,10 +1,9 @@
 # PseudoAdmissionController
 
-La necessità è di avere un controllo sulle risorse dei singoli container, nello specifico Requests e Limits, per le versioni più vecchie, dove gli AdmissionController non sono presenti.
+La necessità è di avere un controllo sulle risorse dei singoli container, nello specifico Requests e Limits, per le versioni più vecchie di kubernetes/Openshift, dove gli AdmissionController non sono presenti.
 
 L'admission Controller normalmente intercettano le chiamate effettuate verso le API di Kubernetes/Openshift e verificano se i requisiti impostati vengono rispettati.
-
-PseudoAdmissionController effettua un controllo molto simile ma a posteriori dal rilascio infatti verifica le REquests e i Limits di  ogni risorsa che genera un pod applicativo, quali Deployment, DeploymentConfig, Statefulset etc.
+PseudoAdmissionController effettua un controllo molto simile , ma a posteriori dal rilascio,  verifica le Requests e i Limits di  ogni risorsa che genera un pod applicativo, quali Deployment, DeploymentConfig, Statefulset etc.
 
 **Installazione**
 
