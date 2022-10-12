@@ -21,13 +21,24 @@ make install
 
 **Variabili d'ambiente**
 
-|Variabile      |Esempio                  |Descrizione|
-|---------------|-------------------------|-----------|
-|TZ             |Europe/Rome              |           |
-|NAMESPACES     |test\-namespace          |           |
-|EXCLUDE        |PseudoAdmissionController|           |
-|LOGLEVEL       |INFO                     |           |
-|REQUEST\_MEMORY|10Mi,20Mi                |           |
-|LIMITS\_MEMORY |2Gi,4Gi                  |           |
-|REQUEST\_CPU   |100m,200m                |           |
-|LIMITS\_CPU    |2,4                      |           |
+|Variabile      |Esempio                  |Descrizione                                                                   |
+|---------------|-------------------------|------------------------------------------------------------------------------|
+|TZ             |Europe/Rome              |Impostare il timezone del micro\-servizio                                     |
+|NAMESPACES     |test\-namespace          |Impostare una lista i namespaces da tenere sotto controllo                    |
+|EXCLUDE        |PseudoAdmissionController|Escludere il nome di un oggetto es. nome della Deployment,DeploymentConfig etc|
+|LOGLEVEL       |INFO                     |Impostare il livello di verbosità                                             |
+|REQUEST\_MEMORY|10Mi,20Mi                |Impostare una                                                                 |
+|LIMITS\_MEMORY |2Gi,4Gi                  |Impostare una                                                                 |
+|REQUEST\_CPU   |100m,200m                |Impostare una                                                                 |
+|LIMITS\_CPU    |2,4                      |Impostare una                                                                 |
+
+**Disinstallazione**
+
+1. Modificare le variabili all'interno del file makefile impostando le corrette configurazioni per il proprio cluster
+2. Lanciare il comando di installazione
+
+```
+make uninstall
+```
+
+1. verificare che sul namespaces indicato ci sia il pod pseudoadmissioncontroller\-xxxxxxxx \( deployment \)
