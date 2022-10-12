@@ -28,9 +28,9 @@ make install
 |EXCLUDE        |PseudoAdmissionController|Escludere il nome di un oggetto es. nome della Deployment,DeploymentConfig etc|
 |LOGLEVEL       |INFO                     |Impostare il livello di verbosità                                             |
 |REQUEST\_MEMORY|10Mi,20Mi                |Impostare una Whitelist di valori ( separati dal virgola) tutti quelli non presenti nella lista andranno a comporre una BlackList                                                                 |
-|LIMITS\_MEMORY |2Gi,4Gi                  |Impostare una                                                                 |
-|REQUEST\_CPU   |100m,200m                |Impostare una                                                                 |
-|LIMITS\_CPU    |2,4                      |Impostare una                                                                 |
+|LIMITS\_MEMORY |2Gi,4Gi                  |Impostare una Whitelist di valori ( separati dal virgola) tutti quelli non presenti nella lista andranno a comporre una BlackList                                                                 |
+|REQUEST\_CPU   |100m,200m                |Impostare una Whitelist di valori ( separati dal virgola) tutti quelli non presenti nella lista andranno a comporre una BlackList                                                                 |
+|LIMITS\_CPU    |2,4                      |Impostare una Whitelist di valori ( separati dal virgola) tutti quelli non presenti nella lista andranno a comporre una BlackList                                                                 |
 
 **Disinstallazione**
 
