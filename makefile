@@ -18,7 +18,7 @@ install:
 	oc label sa $(NAME) app=$(NAME) -n $(NAMESPACE)
 	@echo "Add Enviroment"
 	oc patch deployment $(NAME) -p '{"spec":{"template":{"spec":{"serviceAccount":"pseudoadmissioncontroller"}}}}' -n $(NAMESPACE)
-	oc set env deployment/$(NAME) TZ=$(TZ) NAMESPACES=$(NAMESPACE) EXCLUDE=$(NAME) LOGLEVEL=$(LOGLEVEL) -n $(NAMESPACE) 
+	oc set env deployment/$(NAME) TZ=$(TZ) NAMESPACES=$(NAMESPACE) EXCLUDE=$(EXCLUDE) LOGLEVEL=$(LOGLEVEL) -n $(NAMESPACE) 
 	oc set env deployment/$(NAME) REQUEST_MEMORY=$(REQUEST_MEMORY) LIMITS_MEMORY=$(LIMITS_MEMORY) REQUEST_CPU=$(REQUEST_CPU) LIMITS_CPU=$(LIMITS_CPU) -n $(NAMESPACE)
 	oc scale deployment/$(NAME) --replicas=1 -n $(NAMESPACE)
 	@echo "Fix Permission"
