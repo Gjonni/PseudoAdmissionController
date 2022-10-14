@@ -5,7 +5,7 @@ from library.Logging import Logging
 class ValidationEnviroment:
     def __init__(self):
         self.namespaces = os.environ.get("NAMESPACES")
-        self.excludeObject = os.environ.get("EXCLUDE")
+        self.excludeObject = os.environ.get("EXCLUDE_OBJECT_NAME")
         self.requestMemory = os.environ.get("REQUEST_MEMORY")
         self.requestCpu = os.environ.get("REQUEST_CPU")
         self.limitsMemory = os.environ.get("LIMITS_MEMORY")
