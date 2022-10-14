@@ -2,6 +2,7 @@ SHELL=/bin/bash
 ### SOLO TESTING NON SO SE FUNGE
 
 NAMESPACE = passbolt
+EXCLUDE = passbolt-db
 NAME = pseudoadmissioncontroller
 TZ = Europe/Rome
 LOGLEVEL = INFO
