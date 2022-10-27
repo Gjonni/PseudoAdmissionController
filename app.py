@@ -57,6 +57,8 @@ def ocp(ThreadName, delay, kind):
     Logging.logger.debug(f"Kind: {kind}     - requestMemory: {requestMemory}")
     Logging.logger.debug(f"Kind: {kind}     - requestCpu: {requestCpu}")
     Logging.logger.debug(f"Kind: {kind}     - limitsMemory: {limitsMemory}")
+    Logging.logger.debug(f"Kind: {kind}     - limitsMemory: {limitsCpu}")
+
     Logging.logger.debug(f"Kind: {kind} ------------------- END TARGET Range INFO ------------------------")
 
     for object in v1_ocp.watch(namespace=namespace):
@@ -85,14 +87,14 @@ def ocp(ThreadName, delay, kind):
             container.resources.requests.cpu = conv_core_to_millicore(container.resources.requests.cpu)
 
             # Check MEMORY REQUEST
-            if ( container.resources.requests.memory <= requestMemory.min
-                or container.resources.requests.memory >= requestMemory.max):
+            if ( container.resources.requests.memory < requestMemory.min
+                or container.resources.requests.memory > requestMemory.max):
                 Logging.logger.info(f"{ ThreadName } -- MEMORY REQUEST -- Policy Violation for: { kind } { object['object'].metadata.name } --> Container: { container.name } - Actual Memory Requests: { container.resources.requests.memory} in Namespace: { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
             # Check CPU REQUEST
-            if ( container.resources.requests.cpu <= requestCpu.min
-                or container.resources.requests.cpu >= requestCpu.max):
+            if ( container.resources.requests.cpu < requestCpu.min
+                or container.resources.requests.cpu > requestCpu.max):
                 Logging.logger.info(f"{ ThreadName } -- CPU REQUEST -- Policy Violation for: { kind } { object['object'].metadata.name } --> Container: { container.name } - Actual CPU Requests: { container.resources.requests.cpu} in Namespace: { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
@@ -107,15 +109,15 @@ def ocp(ThreadName, delay, kind):
             container.resources.limits.cpu = conv_core_to_millicore(container.resources.limits.cpu)
 
             # Check MEMORY LIMIT
-            if ( container.resources.limits.memory <= limitsMemory.min
-                or container.resources.limits.memory >= limitsMemory.max):
+            if ( container.resources.limits.memory < limitsMemory.min
+                or container.resources.limits.memory > limitsMemory.max):
                 Logging.logger.info(f"{ ThreadName } --  MEMORY LIMIT -- Policy Violation for: { kind } { object['object'].metadata.name } --> Container: { container.name } - Actual Memory limit: { container.resources.limits.memory} in Namespace: { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
             # Check CPU LIMIT
-            if ( container.resources.limits.cpu <= limitsCpu.min
-                or container.resources.limits.cpu >= limitsCpu.max):
+            if ( container.resources.limits.cpu < limitsCpu.min
+                or container.resources.limits.cpu > limitsCpu.max):
                 Logging.logger.info(f"{ ThreadName } --  CPU LIMIT -- Policy Violation for: { kind } { object['object'].metadata.name } --> Container: { container.name } - Actual CPU limit: { container.resources.limits.memory} in Namespace: { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
