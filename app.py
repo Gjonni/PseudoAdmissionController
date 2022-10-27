@@ -105,8 +105,8 @@ def ocp(ThreadName, delay, kind):
             container.resources.limits.cpu = conv_core_to_millicore(container.resources.limits.cpu)
 
             # Check MEMORY LIMIT
-            if ( container.resources.limits.memory < limitsMemory.min
-                or container.resources.limits.memory > limitsMemory.max):
+            if ( container.resources.limits.memory <= limitsMemory.min
+                or container.resources.limits.memory >= limitsMemory.max):
                 Logging.logger.info(f"{ ThreadName } --  MEMORY LIMIT -- Policy Violation for: { kind } { object['object'].metadata.name } --> Container: { container.name } - Actual Memory limit: { container.resources.limits.memory} in Namespace: { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
