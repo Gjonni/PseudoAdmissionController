@@ -57,7 +57,7 @@ def ocp(ThreadName, delay, kind):
     Logging.logger.debug(f"Kind: {kind}     - requestMemory: {requestMemory}")
     Logging.logger.debug(f"Kind: {kind}     - requestCpu: {requestCpu}")
     Logging.logger.debug(f"Kind: {kind}     - limitsMemory: {limitsMemory}")
-    Logging.logger.debug(f"Kind: {kind}     - limitsMemory: {limitsCpu}")
+    Logging.logger.debug(f"Kind: {kind}     - limitsCpu: {limitsCpu}")
 
     Logging.logger.debug(f"Kind: {kind} ------------------- END TARGET Range INFO ------------------------")
 
