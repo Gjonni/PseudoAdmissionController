@@ -3,13 +3,13 @@ SHELL=/bin/bash
 ### (EN) ONLY TESTING I DON'T KNOW IF IT WORKS
 
 EXCLUDE_OBJECT_NAME = passbolt-db
-NAMESPACE = op-test
+NAMESPACE = gfilice-development
 NAME = pseudoadmissioncontroller
 TZ = Europe/Rome
 LOGLEVEL = INFO
 REQUEST_MEMORY = '10Mi-500Mi'
 LIMITS_MEMORY = '500Mi-2Gi'
-REQUEST_CPU = '100m-1200m'
+REQUEST_CPU = '100m-1000m'
 LIMITS_CPU = '500m-2'
 
 ######################################
