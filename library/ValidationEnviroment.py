@@ -30,6 +30,7 @@ class ValidationEnviroment:
     def excludeObject(self, value):
         Logging.logger.debug(f"Gli oggetti esclusi dalla verifica sono {value}")
         if not value:
+            value = ""
             raise ValueError("List Object BlackList is not set.")
         self._excludeObject = value.split(',')
 
