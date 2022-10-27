@@ -51,6 +51,8 @@ def ocp(ThreadName, delay, kind):
     requestMemory = ValidationEnviroment().requestMemory
     requestCpu = ValidationEnviroment().requestCpu
     limitsMemory = ValidationEnviroment().limitsMemory
+    limitsCpu = ValidationEnviroment().limitsCpu
+
     Logging.logger.debug(f"Kind: {kind} - SETTED RANGE:")
     Logging.logger.debug(f"Kind: {kind}     - requestMemory: {requestMemory}")
     Logging.logger.debug(f"Kind: {kind}     - requestCpu: {requestCpu}")
@@ -111,10 +113,10 @@ def ocp(ThreadName, delay, kind):
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
-
             # Check CPU LIMIT
-            if (container.resources.limits.cpu not in ValidationEnviroment().limitsCpu):
-                Logging.logger.info(f"{ ThreadName } -- CPU LIMIT -- Policy Violation for: { kind } { object['object'].metadata.name } --> Container: { container.name } - Actual CPU limit: { container.resources.limits.cpu} in Namespace: { object['object'].metadata.namespace } - Scale to 0 ")
+            if ( container.resources.limits.cpu <= limitsCpu.min
+                or container.resources.limits.cpu >= limitsCpu.max):
+                Logging.logger.info(f"{ ThreadName } --  MEMORY LIMIT -- Policy Violation for: { kind } { object['object'].metadata.name } --> Container: { container.name } - Actual CPU limit: { container.resources.limits.memory} in Namespace: { object['object'].metadata.namespace } - Scale to 0 ")
                 scale_down(object["object"].kind, object["object"].metadata.name, object["object"].metadata.namespace,)
 
 
