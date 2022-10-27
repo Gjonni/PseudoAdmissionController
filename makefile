@@ -7,10 +7,10 @@ NAMESPACE = op-test
 NAME = pseudoadmissioncontroller
 TZ = Europe/Rome
 LOGLEVEL = INFO
-REQUEST_MEMORY = '10Mi,20Mi'
-LIMITS_MEMORY = '500Mi,1Gi,2Gi'
-REQUEST_CPU = '100m,200m'
-LIMITS_CPU = '500m,1,2'
+REQUEST_MEMORY = '10Mi-500Mi'
+LIMITS_MEMORY = '500Mi-2Gi'
+REQUEST_CPU = '100m-1200m'
+LIMITS_CPU = '500m-2'
 
 ######################################
 ####### STOP MODIFIABLE VALUES #######
